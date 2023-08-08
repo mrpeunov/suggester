@@ -1,4 +1,4 @@
-package internal
+package db
 
 import (
 	"context"
@@ -8,17 +8,20 @@ import (
 	"time"
 )
 
-func GetDBConnection() *sql.DB {
+func GetDBConnection() (*sql.DB, error) {
 	connStr := "postgres://postgres:password@localhost/postgres?sslmode=disable"
 	db, err := sql.Open("postgres", connStr)
 	if err != nil {
-		log.Fatal(err)
+		return db, err
 	}
-	return db
+	return db, nil
 }
 
 func InitSchema() error {
-	db := GetDBConnection()
+	db, err := GetDBConnection()
+	if err != nil {
+		fmt.Println("Что-то сделать")
+	}
 	query := `
 		CREATE TABLE IF NOT EXISTS query(
     			query_id serial PRIMARY KEY, 
